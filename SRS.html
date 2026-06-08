@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Software Requirements Specification (SRS)</title>
+    <!-- Tailwind CSS for styling and responsiveness -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 2rem auto;
+            padding: 2.5rem;
+            background-color: white;
+            border-radius: 1rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        h1, h2, h3, h4 {
+            font-weight: 700;
+            color: #1f2937;
+        }
+        h1 { font-size: 2.5rem; margin-bottom: 2rem; text-align: center; }
+        h2 { font-size: 2rem; margin-top: 3rem; margin-bottom: 1rem; border-bottom: 2px solid #e5e7eb; padding-bottom: 0.75rem; }
+        h3 { font-size: 1.625rem; margin-top: 2rem; margin-bottom: 1rem; }
+        h4 { font-size: 1.25rem; margin-top: 1.5rem; margin-bottom: 0.75rem; }
+        p, li {
+            line-height: 1.75;
+            color: #4b5563;
+            margin-bottom: 1rem;
+        }
+        ul, ol {
+            margin-left: 2rem;
+            margin-bottom: 1.5rem;
+        }
+        li strong {
+            color: #1f2937;
+        }
+        code, pre {
+            background-color: #f3f4f6;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.375rem;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        pre {
+            padding: 1.25rem;
+            overflow-x: auto;
+            margin-bottom: 1.5rem;
+        }
+
+        /* Styles for the new, more detailed workflow diagrams */
+        .workflow-diagram {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.5rem;
+            padding: 2rem 0;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+        }
+        .workflow-diagram-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #1f2937;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #e2e8f0;
+            width: 100%;
+            text-align: center;
+        }
+        .workflow-step {
+            width: 90%;
+            max-width: 600px;
+            background-color: #f0f4f8;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            text-align: left;
+            transition: transform 0.2s;
+            position: relative;
+        }
+        .workflow-step:hover {
+            transform: translateY(-5px);
+        }
+        .workflow-step h4 {
+            font-weight: 700;
+            font-size: 1.125rem;
+            color: #1a202c;
+            margin-top: 0;
+            margin-bottom: 0.5rem;
+        }
+        .workflow-step p {
+            font-size: 0.875rem;
+            color: #4a5568;
+            line-height: 1.5;
+            margin-bottom: 0;
+        }
+        .arrow-down {
+            width: 2px;
+            height: 2rem;
+            background-color: #e2e8f0;
+            position: relative;
+        }
+        .arrow-down::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: -4px;
+            width: 0;
+            height: 0;
+            border-left: 6px solid transparent;
+            border-right: 6px solid transparent;
+            border-top: 8px solid #e2e8f0;
+        }
+        
+        .sub-steps {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-top: 1rem;
+            padding-left: 1.5rem;
+            border-left: 2px dashed #cbd5e1;
+        }
+        .sub-step {
+            background-color: #e2e8f0;
+            border-radius: 8px;
+            padding: 1rem;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+    </style>
+</head>
+<body class="bg-gray-50 p-6">
+
+    <div class="container">
+        <!-- Main Title -->
+        <h1 class="font-bold text-gray-800">Software Requirements Specification (SRS) for Multi-Document Chatbot</h1>
+
+        <!-- Section 1: Introduction -->
+        <h2>1. Introduction</h2>
+        <h3>1.1. Purpose</h3>
+        <p>This document specifies the comprehensive requirements for a Multi-Document Chatbot application, featuring a "Verified Brainmemory." The application is designed to enable users to upload documents, process them into a structured knowledge base, and engage in a conversational interface with the stored information. This SRS serves as a foundational reference for the development, testing, and maintenance of the software, ensuring all stakeholders have a shared understanding of the system's objectives and functionality.</p>
+
+        <h3>1.2. Scope</h3>
+        <p>The application is a web-based tool developed in Python using the Streamlit framework. It supports various document formats, including PDF, DOCX, TXT, and common image types (PNG, JPG, JPEG). The system leverages locally hosted Large Language Models (LLMs) via the Ollama platform for intelligent processing, summarization, and query-answering. The scope encompasses parallel document processing, a chat interface, a transparent knowledge base viewer, and a reporting utility. The focus is on a local-first, privacy-conscious design that provides a powerful alternative to cloud-based solutions.</p>
+
+        <h3>1.3. Glossary</h3>
+        <p>This section provides definitions for key terms, acronyms, and abbreviations used throughout this document.</p>
+        <ul class="list-disc">
+            <li><strong>SRS</strong>: Software Requirements Specification. A document that describes the system's functional and non-functional requirements.</li>
+            <li><strong>LLM</strong>: Large Language Model. A type of artificial intelligence trained on vast amounts of text data to understand and generate human-like text.</li>
+            <li><strong>UI</strong>: User Interface. The graphical layout and elements through which a user interacts with the application.</li>
+            <li><strong>Ollama</strong>: An open-source framework for running large language models locally on a machine, eliminating the need for cloud-based API calls.</li>
+            <li><strong>Brainmemory</strong>: The application's core knowledge base. Unlike a traditional vector database, it is stored in a human-readable, structured format (JSON and CSV) for transparency and verifiability.</li>
+            <li><strong>RAG</strong>: Retrieval-Augmented Generation. A technique used to enhance LLM responses by first retrieving relevant information from a knowledge base and then using it to "augment" the prompt, grounding the answer in specific data.</li>
+            <li><strong>TF-IDF</strong>: Term Frequency-Inverse Document Frequency. A statistical measure used to evaluate how important a word is to a document in a collection or corpus.</li>
+        </ul>
+
+        <h3>1.4. References</h3>
+        <ul class="list-disc">
+            <li>Python 3.x Documentation</li>
+            <li>Streamlit Documentation</li>
+            <li>PyPDF2 Documentation</li>
+            <li>langchain_community Documentation</li>
+            <li>NLTK Documentation</li>
+            <li>Ollama API Documentation</li>
+        </ul>
+
+        <h3>1.5. Overview</h3>
+        <p>This document provides a detailed overview of the system, including its overall description, specific functional and non-functional requirements, and key design constraints. The structure is organized to progress from a high-level conceptual view to a detailed specification required for implementation.</p>
+
+        <!-- Section 2: Overall Description -->
+        <h2>2. Overall Description</h2>
+        <h3>2.1. Product Perspective</h3>
+        <p>The Multi-Document Chatbot is a standalone, web-based application. Its core functionality is self-contained and does not rely on external cloud services, as it utilizes a locally deployed LLM via the Ollama platform. The system manages its own data persistence by creating and maintaining a dedicated <code>brainmemory</code> directory for documents and knowledge patterns. This design prioritizes user privacy and independence from third-party services.</p>
+
+        <h3>2.2. Product Functions</h3>
+        <ul class="list-disc">
+            <li><strong>Document Management</strong>: The application provides a simple yet effective file uploader, allowing users to securely add documents of various formats (PDF, DOCX, TXT, images). These files are stored in a dedicated local directory, and a password-protected deletion feature ensures user control over their data.</li>
+            <li><strong>Knowledge Processing</strong>: Users can choose between a fast, heuristic-based processing method and an intelligent, LLM-driven approach. The system extracts text from documents and processes it to generate structured knowledge patterns, including topics, entities, and summaries.</li>
+            <li><strong>Conversational Interface</strong>: The core functionality is a chat interface that allows users to ask questions about the information contained in the documents. The system uses a RAG approach to provide answers that are accurate and grounded in the source material.</li>
+            <li><strong>Knowledge Synthesis</strong>: A unique feature is the ability to generate a single, high-level knowledge pattern that synthesizes information across all stored documents, providing a unified view of the entire knowledge base.</li>
+            <li><strong>Summarization and Reporting</strong>: The application can generate both page-specific summaries for PDF documents and a comprehensive "Consolidated Report" that brings together chat history and all summaries into a single, cohesive document for easy export.</li>
+            <li><strong>Data Export</strong>: Features are provided to export the entire chat history, the structured knowledge base in CSV format, and any generated reports, giving users full control of their data.</li>
+        </ul>
+
+        <h3>2.3. User Characteristics</h3>
+        <p>The target user base consists of individuals who need to analyze and interact with multiple documents, such as researchers, students, and professionals in fields requiring document-intensive work. Users are expected to have a basic understanding of a command-line interface to run the Python application and a local Ollama server.</p>
+
+        <h3>2.4. Constraints</h3>
+        <ul class="list-disc">
+            <li><strong>Platform</strong>: The application is restricted to a local machine with a Python 3.x environment.</li>
+            <li><strong>LLM Dependency</strong>: Requires a local Ollama server for all LLM-related operations, as it is not designed to use external APIs.</li>
+            <li><strong>Security</strong>: The deletion of all stored data is protected by a hardcoded password to prevent accidental data loss.</li>
+            <li><strong>UI</strong>: The user interface is limited to the capabilities and widgets provided by the Streamlit framework.</li>
+            <li><strong>Data Storage</strong>: All documents and knowledge patterns must be stored locally in the designated <code>brainmemory</code> directory.</li>
+        </ul>
+
+        <h3>2.5. Assumptions and Dependencies</h3>
+        <ul class="list-disc">
+            <li>It is assumed that the user has a functioning installation of Ollama with at least one pre-downloaded model.</li>
+            <li>The user is presumed to have adequate local storage to accommodate uploaded documents and the generated knowledge base.</li>
+            <li>All Python dependencies must be correctly installed and configured.</li>
+        </ul>
+
+        <h3>2.6. Comparison to Current State-of-the-Art and Project Uniqueness</h3>
+        <p>This project stands apart from modern solutions by prioritizing a local-first, privacy-conscious architecture and introducing the "Verified Brainmemory" concept. While many contemporary multi-document analysis and RAG systems rely on complex, opaque vector databases and cloud-based LLM integrations, this application provides a robust, transparent, and user-centric alternative.</p>
+        <p>The key differentiators include:</p>
+        <ul class="list-decimal">
+            <li><strong>Local-First and Privacy-Conscious Design</strong>: The application operates entirely on a local machine, ensuring sensitive data never leaves the user's environment. This provides a significant advantage for users working with confidential information.</li>
+            <li><strong>The "Verified Brainmemory" Concept</strong>: Rather than using an opaque vector database, the project creates a human-readable knowledge base in JSON and CSV formats. This transparency allows users to directly inspect and validate the system's extracted information, fostering greater trust and confidence in the results.</li>
+            <li><strong>Hybrid Processing Flexibility</strong>: By offering both an LLM-driven "Intelligent" method and a faster, heuristic-based "Fast" method, the application caters to a wider range of user hardware capabilities and project requirements, balancing performance and analytical depth.</li>
+            <li><strong>Integrated Reporting and Synthesis</strong>: The capability to generate a "Consolidated Report" that synthesizes information from both chat history and document summaries transforms the tool from a simple chatbot into a powerful research and reporting assistant.</li>
+        </ul>
+
+        <!-- Section 3: Specific Requirements -->
+        <h2>3. Specific Requirements</h2>
+        <h3>3.1. Functional Requirements</h3>
+        <h4>3.1.1. Document Upload and Processing</h4>
+        <ul class="list-disc">
+            <li><strong>FR-1</strong>: The system shall provide a file uploader that accepts multiple files of type PDF, DOCX, TXT, PNG, JPG, and JPEG.</li>
+            <li><strong>FR-2</strong>: Upon file upload, the system shall store the files in the <code>/brainmemory/documents</code> directory.</li>
+            <li><strong>FR-3</strong>: The system shall process uploaded documents concurrently to extract text and generate knowledge patterns.</li>
+            <li><strong>FR-4</strong>: The system shall offer two distinct methods for knowledge pattern generation: a) <strong>Intelligent (LLM)</strong>, which uses a local LLM to generate topics, entities, and summaries, and b) <strong>Fast (Hybrid Approach)</strong>, which uses local NLP algorithms for rapid pattern generation.</li>
+            <li><strong>FR-5</strong>: The generated knowledge patterns shall be stored in a structured JSON file (<code>knowledge.json</code>).</li>
+            <li><strong>FR-6</strong>: The system shall also append the generated knowledge patterns to a CSV file (<code>knowledge.csv</code>) for easy export.</li>
+        </ul>
+
+        <h4>3.1.2. Conversational Interface</h4>
+        <ul class="list-disc">
+            <li><strong>FR-7</strong>: The system shall feature a chat interface for user queries.</li>
+            <li><strong>FR-8</strong>: The user shall be able to select a specific document for a focused chat or a "General" option to query the entire knowledge base.</li>
+            <li><strong>FR-9</strong>: The system's responses shall be synthesized from relevant knowledge patterns and the document content using a RAG approach.</li>
+            <li><strong>FR-10</strong>: Chat history for each document and the "General" chat shall be preserved in the user's session state.</li>
+        </ul>
+
+        <h3>3.2. External Interface Requirements</h3>
+        <h4>3.2.1. User Interfaces</h4>
+        <ul class="list-disc">
+            <li><strong>UI-1</strong>: The application shall present a clean, intuitive user interface built with Streamlit.</li>
+            <li><strong>UI-2</strong>: The UI shall be logically divided into sections using tabs for "Chat," "Knowledge Base," and "Summarize & Report."</li>
+            <li><strong>UI-3</strong>: A sidebar shall house global controls for model selection, document upload, and memory management.</li>
+            <li><strong>UI-4</strong>: The UI shall provide clear user feedback, including progress bars for long-running tasks and status messages for operation outcomes.</li>
+        </ul>
+
+        <h4>3.2.2. Software Interfaces</h4>
+        <ul class="list-disc">
+            <li><strong>SI-1</strong>: The system shall interface with the Streamlit framework for web application development.</li>
+            <li><strong>SI-2</strong>: Communication with the Ollama API shall be implemented to utilize local LLMs.</li>
+            <li><strong>SI-3</strong>: The <code>PyPDF2</code> library shall be used for PDF text extraction.</li>
+            <li><strong>SI-4</strong>: The <code>docx</code> library shall be used for DOCX text extraction.</li>
+            <li><strong>SI-5</strong>: <code>Pillow</code> and <code>pytesseract</code> libraries shall be used for image-based text extraction.</li>
+            <li><strong>SI-6</strong>: Standard Python libraries shall be employed for file I/O, parallel processing, and data serialization.</li>
+        </ul>
+
+        <h3>3.3. Non-Functional Requirements</h3>
+        <h4>3.3.1. Performance</h4>
+        <ul class="list-disc">
+            <li><strong>NFR-1</strong>: The application's UI must remain responsive during document processing through the use of concurrent execution.</li>
+            <li><strong>NFR-2</strong>: The "Fast (Hybrid Approach)" for pattern generation is expected to complete within 5 seconds for a typical 10-page document.</li>
+        </ul>
+
+        <h4>3.3.2. Security</h4>
+        <ul class="list-disc">
+            <li><strong>NFR-3</strong>: Data deletion must be secured by a hardcoded password.</li>
+            <li><strong>NFR-4</strong>: All sensitive data (documents and knowledge patterns) must be stored locally and not transmitted over external networks.</li>
+        </ul>
+
+        <h4>3.3.3. Reliability</h4>
+        <ul class="list-disc">
+            <li><strong>NFR-5</strong>: The system shall gracefully handle corrupted or malformed documents, logging an error and continuing processing other files.</li>
+            <li><strong>NFR-6</strong>: The system shall utilize robust error handling to manage potential failures during LLM calls, file operations, and data parsing.</li>
+        </ul>
+
+        <h3>3.4. Implementation and Processing Workflow</h3>
+        <h4>3.4.1. High-Level Architecture and Component Integration</h4>
+        <p>The application's architecture is a single-page web application built with Streamlit. The key components are:</p>
+        <ul class="list-decimal">
+            <li><strong>Streamlit UI (<code>app.py</code>)</strong>: The front-end managing user interaction and state.</li>
+            <li><strong>Core Logic (<code>app.py</code>)</strong>: Contains all functions for data extraction, processing, and LLM interaction.</li>
+            <li><strong>Local File System (<code>brainmemory/</code>)</strong>: The local data persistence layer.</li>
+            <li><strong>Ollama LLM Server</strong>: The local generative AI service.</li>
+            <li><strong>LangChain Integration</strong>: The interface between the Python logic and the Ollama API.</li>
+        </ul>
+
+        <h4>3.4.2. Workflow Block Diagrams</h4>
+        <p>The following diagrams provide a detailed, step-by-step illustration of the primary data and processing flows within the application.</p>
+
+        <!-- Start of the new, detailed HTML workflow diagram for a new document upload -->
+        <div class="workflow-diagram">
+            <h3 class="workflow-diagram-title">Workflow 1: New Document Upload and Query</h3>
+
+            <!-- Step 1: User Uploads -->
+            <div class="workflow-step bg-green-50">
+                <h4>1. User Uploads PDF Document</h4>
+                <p>The user selects a PDF file via the Streamlit file uploader. The application immediately saves the file to the <code>/brainmemory/documents</code> directory. For example: <code>uploaded_report.pdf</code>.</p>
+            </div>
+            <div class="arrow-down"></div>
+
+            <!-- Step 2: Document Processing -->
+            <div class="workflow-step bg-blue-50">
+                <h4>2. Concurrent Text Extraction & Processing</h4>
+                <p>The application spawns a new thread or process for <code>uploaded_report.pdf</code> to prevent the UI from freezing. This thread performs two key actions:</p>
+                <div class="sub-steps">
+                    <div class="sub-step">
+                        <h4>2a. Text Extraction</h4>
+                        <p>The <code>PyPDF2</code> library is used to read the PDF and extract all raw text. The extracted text is then segmented into chunks or paragraphs for easier processing.</p>
+                    </div>
+                    <div class="sub-step">
+                        <h4>2b. Knowledge Pattern Generation</h4>
+                        <p>A prompt is constructed and sent to the local Ollama LLM, along with the extracted text. The prompt asks the LLM to identify and extract topics, key entities, and a concise summary from the text. This is a crucial step to create the "Brainmemory."</p>
+                    </div>
+                </div>
+            </div>
+            <div class="arrow-down"></div>
+
+            <!-- Step 3: Brainmemory Storage -->
+            <div class="workflow-step bg-gray-100">
+                <h4>3. 'Brainmemory' Data Storage</h4>
+                <p>The LLM's structured output (topics, entities, summary) is saved into a new entry in the <code>knowledge.json</code> file. This process is repeated for every uploaded document. An entry is also added to <code>knowledge.csv</code> for easy export and inspection.</p>
+            </div>
+            <div class="arrow-down"></div>
+
+            <!-- Step 4: User Query -->
+            <div class="workflow-step bg-yellow-50">
+                <h4>4. User Submits Query</h4>
+                <p>The user enters a question in the chat, for example: "What is the main finding of the report?" The system identifies the query and its intent.</p>
+            </div>
+            <div class="arrow-down"></div>
+            
+            <!-- Step 5: Retrieval-Augmented Generation (RAG) -->
+            <div class="workflow-step bg-blue-50">
+                <h4>5. Retrieval-Augmented Generation (RAG)</h4>
+                <p>The system prepares a highly-contextualized prompt for the LLM. This is done by:</p>
+                <div class="sub-steps">
+                    <div class="sub-step">
+                        <h4>5a. Retrieval</h4>
+                        <p>The system searches the <code>knowledge.json</code> and the raw text from <code>uploaded_report.pdf</code> to find all sentences or paragraphs most relevant to "main finding."</p>
+                    </div>
+                    <div class="sub-step">
+                        <h4>5b. Augmentation</h4>
+                        <p>The retrieved, relevant snippets are combined with the user's original question to create a new, enriched prompt. For example: "Using the following context, '...[relevant text snippets]...', what is the main finding of the report?"</p>
+                    </div>
+                </div>
+            </div>
+            <div class="arrow-down"></div>
+
+            <!-- Step 6: Ollama API Call -->
+            <div class="workflow-step bg-blue-50">
+                <h4>6. Local Ollama LLM Call</h4>
+                <p>The final, augmented prompt is sent to the locally running Ollama LLM via its API. The LLM processes this enriched context and generates a response based on the provided information, ensuring the answer is accurate and grounded in the source document.</p>
+            </div>
+            <div class="arrow-down"></div>
+
+            <!-- Step 7: Final Response -->
+            <div class="workflow-step bg-yellow-50">
+                <h4>7. Display Final Response</h4>
+                <p>The LLM's generated answer is formatted and displayed in the chat interface. The response is directly tied to the information found in the documents, providing a reliable and verifiable result.</p>
+            </div>
+
+        </div>
+        <!-- End of the first workflow diagram -->
+
+        <!-- Start of the new, detailed HTML workflow diagram for no document upload -->
+        <div class="workflow-diagram">
+            <h3 class="workflow-diagram-title">Workflow 2: Querying with No New Documents</h3>
+
+            <!-- Step 1: User Query -->
+            <div class="workflow-step bg-yellow-50">
+                <h4>1. User Submits Query</h4>
+                <p>The user enters a question into the chat, for example: "What were the key topics from all documents?" No new documents are uploaded in this scenario.</p>
+            </div>
+            <div class="arrow-down"></div>
+
+            <!-- Step 2: System Checks 'Brainmemory' -->
+            <div class="workflow-step bg-gray-100">
+                <h4>2. Accessing Existing 'Brainmemory'</h4>
+                <p>The application checks the <code>/brainmemory</code> directory and finds that the <code>knowledge.json</code> file already contains structured information from previous sessions. It loads this existing knowledge base into memory.</p>
+            </div>
+            <div class="arrow-down"></div>
+
+            <!-- Step 3: Retrieval-Augmented Generation (RAG) -->
+            <div class="workflow-step bg-blue-50">
+                <h4>3. Retrieval-Augmented Generation (RAG)</h4>
+                <p>The system prepares the prompt for the LLM by:</p>
+                <div class="sub-steps">
+                    <div class="sub-step">
+                        <h4>Retrieval</h4>
+                        <p>The application searches the loaded <code>knowledge.json</code> to find all topics and summaries that match the user's query about "key topics."</p>
+                    </div>
+                    <div class="sub-step">
+                        <h4>Augmentation</h4>
+                        <p>The retrieved topics and summaries are combined with the user's question to create a prompt. For example: "Using this list of topics and summaries from multiple documents, '...[all topics and summaries]...', what are the overall key topics?"</p>
+                    </div>
+                </div>
+            </div>
+            <div class="arrow-down"></div>
+
+            <!-- Step 4: Ollama API Call -->
+            <div class="workflow-step bg-blue-50">
+                <h4>4. Local Ollama LLM Call</h4>
+                <p>The augmented prompt is sent to the local Ollama LLM. The LLM's task is to synthesize a cohesive answer based on the pre-existing knowledge patterns it has been given.</p>
+            </div>
+            <div class="arrow-down"></div>
+
+            <!-- Step 5: Final Response -->
+            <div class="workflow-step bg-yellow-50">
+                <h4>5. Display Final Response</h4>
+                <p>The final, synthesized answer is displayed in the chat. The user receives a comprehensive response that is based on the entire body of knowledge, even without a new document being uploaded.</p>
+            </div>
+
+        </div>
+        <!-- End of the second workflow diagram -->
+
+        <h4>3.4.3. Technical Concepts and AI/Generative AI</h4>
+        <p>This section explains the core technical concepts and their application in the project.</p>
+        <p><strong>a. Retrieval-Augmented Generation (RAG):</strong> RAG is a technique that enhances an LLM's capabilities by first <strong>retrieving</strong> relevant information from an external knowledge source and then using that retrieved information to <strong>augment</strong> the LLM's response. In this project, the chat functionality is a classic implementation of RAG. This process is crucial for providing accurate, document-grounded answers and minimizing the risk of the LLM "hallucinating" facts.</p>
+        <p><strong>b. LLM (Large Language Model):</strong> An LLM is a form of artificial intelligence capable of understanding and generating human-like text. Within this application, the LLM serves as the central cognitive engine for tasks such as structured knowledge pattern generation, summarization, and RAG-based query answering. The choice of a local LLM via Ollama is a fundamental design decision that ensures data privacy.</p>
+        <p><strong>c. Ollama:</strong> Ollama is an open-source platform that simplifies the process of running large language models locally on a machine. This design choice provides several key benefits: <strong>Data Privacy</strong> (all data remains on the user's machine), <strong>Offline Capability</strong> (the application functions without an internet connection), and <strong>Cost-Effectiveness</strong> (it eliminates the need for external, pay-per-use API costs).</p>
+        <p><strong>d. The "Verified Brainmemory" Concept:</strong> This is a distinguishing feature of the project. Instead of relying on an opaque vector database that stores numerical embeddings, the application creates a human-readable knowledge base in <code>knowledge.json</code> and <code>knowledge.csv</code>. This transparency allows users to directly inspect and validate the extracted information, building a level of trust in the system's output that is not possible with black-box solutions.</p>
+        <p><strong>e. AI Gen AI:</strong> This term refers to the use of an AI system (the LLM) to generate structured output that, in turn, is used by another AI process. In this project, the LLM generates the structured <code>knowledge.json</code> file, which is then used by the RAG system to inform conversational responses. This illustrates a multi-stage AI pipeline within the application's core logic.</p>
+
+        <!-- Section 4: Appendices -->
+        <h2>4. Appendices</h2>
+        <h3>4.1. Project File Structure</h3>
+        <p>The project is designed to be self-contained within a single directory, with a dedicated subdirectory for data storage.</p>
+        <pre><code>/project_root
+├── app.py
+├── requirements.txt
+└── brainmemory/
+    ├── documents/
+    │   ├── uploaded_file1.pdf
+    │   ├── uploaded_file2.docx
+    │   └── ...
+    ├── knowledge.json
+    ├── knowledge.csv
+    └── synthesized_knowledge.json
+</code></pre>
+
+        <h3>4.2. `app.py` Code Structure</h3>
+        <p>The <code>app.py</code> script contains a series of well-defined functions for each core feature, ensuring a modular and organized codebase. The main execution logic within the <code>if __name__ == "__main__":</code> block orchestrates the Streamlit UI and calls the necessary functions based on user interaction, making the application easy to understand and maintain.</p>
+
+        <h3>4.3. Dependencies (`requirements.txt`)</h3>
+        <p>The following Python packages are required to run the application:</p>
+        <pre><code>streamlit==1.36.0
+langchain-community==0.2.10
+PyPDF2==3.0.1
+scikit-learn==1.5.0
+nltk==3.8.1
+python-docx==1.1.0
+Pillow==10.4.0
+pytesseract==0.3.10
+</code></pre>
+
+        <h3>4.4. Sample Knowledge Pattern JSON Structure</h3>
+        <p>This is an example of a knowledge pattern for a single document. The structure ensures the extracted data is consistent and easily parsable by the application's logic.</p>
+        <pre><code>{
+  "document_id": "filename.pdf",
+  "document_path": "brainmemory/documents/filename.pdf",
+  "topics": ["topic1", "topic2", "topic3"],
+  "entities": ["entity1", "entity2", "entity3"],
+  "related_documents": [
+    {"filename": "related_file_1.docx", "similarity_score": 0.85},
+    {"filename": "related_file_2.txt", "similarity_score": 0.72}
+  ],
+  "summary": "A concise summary of the document's key points, generated by the LLM or an extractive algorithm."
+}
+</code></pre>
+    </div>
+
+</body>
+</html>
